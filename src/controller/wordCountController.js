@@ -23,12 +23,11 @@ exports.getWordCount = async (req, res, next) => {
       imageLinks
     );
     const result = await wc.create();
-    if(result.insertedId){
+    if (result.insertedId) {
       res.status(200).json(wc);
-    }else {
-      res.status(500).json({eror: "Internal Server Erro"});
+    } else {
+      res.status(500).json({ eror: "Internal Server Erro" });
     }
-    
   } catch (error) {
     //  console.error("Error processing word count:", error);
     res.status(400).json({ error: error });
@@ -42,11 +41,10 @@ function processWordCount(url) {
     axios
       .get(url)
       .then((response) => {
-       
         const $ = cheerio.load(response.data);
 
         // Find word count
-        const text = $("p").text();
+        const text = $("div").text();
         const wordCount = text.split(/\s+/).length;
 
         // Find all image links
@@ -81,8 +79,8 @@ function processWordCount(url) {
         if (error.response) {
           // The request was made and the server responded with a status code
           // that falls out of the range of 2xx
-          reject("Url is not responding")
-          return
+          reject("Url is not responding");
+          return;
         } else if (error.request) {
           // The request was made but no response was received
           console.log(Object.keys(error));
@@ -95,11 +93,10 @@ function processWordCount(url) {
 }
 
 exports.addToFavorites = (req, res, next) => {
-
- const {state} = req.body;
+  const { state } = req.body;
   const historyId = req.params.id;
- 
-  WordCount.addToFavourite(historyId,state)
+
+  WordCount.addToFavourite(historyId, state)
     .then((result) => {
       if (result) {
         res.status(200).send({ msg: "favourite state updated" });
@@ -110,11 +107,9 @@ exports.addToFavorites = (req, res, next) => {
     .catch((err) => {
       res.status(500).send({ error: "Internal  Error" });
     });
-
 };
 
 exports.deleteHistoryById = (req, res, next) => {
-
   const historyId = req.params.id;
   WordCount.delete(historyId)
     .then((result) => {
@@ -128,8 +123,6 @@ exports.deleteHistoryById = (req, res, next) => {
       res.status(500).send({ error: "Internal  Error" });
     });
 };
-
-
 
 // exports.getHistory =  async (req, res) => {
 //   const { page, perPage } = req.query;
